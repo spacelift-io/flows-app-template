@@ -106,8 +106,8 @@ export const myNewBlock: AppBlock = {
 
         // Call your external API, process data, etc.
 
+        // Just emit the result directly - don't wrap in success object
         await events.emit({
-          success: true,
           result: "your result",
         });
       },
@@ -123,10 +123,9 @@ export const myNewBlock: AppBlock = {
         // Define your output schema here
         type: "object",
         properties: {
-          success: { type: "boolean" },
           result: { type: "string" },
         },
-        required: ["success"],
+        required: ["result"],
       } as any,
     },
   },
@@ -261,9 +260,9 @@ Follow [Semantic Versioning](https://semver.org/):
 
 ### Error Handling
 
-- Always wrap block logic in try/catch
-- Emit standardized error responses
-- Log errors for debugging
+- Let errors bubble up naturally - don't catch and wrap them
+- Use descriptive error messages
+- The framework will handle error catching and reporting
 
 ### Security
 

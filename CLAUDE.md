@@ -19,15 +19,14 @@ This app demonstrates the standard patterns for Flows apps:
 
 ```text
 {{app_name}}/
-├── main.ts                    # App definition
-├── types.ts                   # TypeScript type definitions
-├── blocks/                    # Block implementations
+├── blocks/                   # Block implementations
 │   ├── index.ts              # Block registry and exports
 │   └── exampleBlock.ts       # Example block implementation
-├── package.json               # Dependencies and scripts
-├── tsconfig.json              # TypeScript configuration
-├── .github/workflows/ci.yml   # CI/CD pipeline
-└── README.md                  # Documentation and setup guide
+├── .github/workflows/ci.yml  # CI/CD pipeline
+├── main.ts                   # App definition
+├── package.json              # Dependencies and scripts
+├── tsconfig.json             # TypeScript configuration
+└── README.md                 # Documentation and setup guide
 ```
 
 ### Key Components
@@ -51,7 +50,7 @@ The template uses a clean block organization pattern:
 
 - Accepts a text message as input
 - Uses the configured API key and base URL
-- Returns a processed result with success/error status
+- Returns a processed result or throws errors
 - Follows standard error handling patterns
 
 ## Implementation Patterns
@@ -92,18 +91,9 @@ const exampleBlock: AppBlock = {
 ### Error Handling Pattern
 
 ```typescript
-try {
-  // Block logic here
-  await events.emit({
-    success: true,
-    // ... success data
-  });
-} catch (error) {
-  await events.emit({
-    success: false,
-    error: error instanceof Error ? error.message : String(error),
-  });
-}
+// Block logic - just throw errors, don't wrap in success/failure objects
+const result = await someOperation();
+await events.emit(result);
 ```
 
 ### Configuration Access
@@ -150,9 +140,9 @@ The template includes a complete CI/CD system:
 
 ### Error Handling
 
-- Always wrap block logic in try/catch
-- Standardized error response format
-- Descriptive error messages
+- Let errors bubble up naturally - don't catch and wrap them
+- Use descriptive error messages
+- The framework will handle error catching and reporting
 
 ### Security
 
@@ -173,8 +163,7 @@ The template includes a complete CI/CD system:
 1. Create block file in `blocks/` directory (e.g., `blocks/myBlock.ts`)
 2. Import and add to `blocks` dictionary in `blocks/index.ts`
 3. Export from `blocks/index.ts` for external use
-4. Update types in `types.ts` if needed
-5. Test with `npm run typecheck`
+4. Test with `npm run typecheck`
 
 **Example:**
 
@@ -195,8 +184,7 @@ export const blocks = {
 ### Adding Configuration
 
 1. Update config schema in `main.ts`
-2. Update AppConfig type in `types.ts`
-3. Access via `input.app.config.fieldName`
+2. Access via `input.app.config.fieldName`
 
 ### Adding Dependencies
 
